@@ -63,6 +63,7 @@ public class DefaultPackageScan implements PackageScan {
             Resource[] resources = resourcePatternResolver.getResources(packageSearchPath);
             for (Resource resource : resources) {
                 Class<?> scanClass = getClassByResource(resource);
+                // 判断 （子类）scanClass 是不是继承与 requestClass (父类)
                 if (requestClass.isAssignableFrom(scanClass)) {
                     set.add((Class<T>) scanClass);
                 }
@@ -84,13 +85,17 @@ public class DefaultPackageScan implements PackageScan {
     @Override
     public <T> Set<Class<T>> getTypesAnnotatedWith(String pkg, Class<? extends Annotation> annotation) {
         Set<Class<T>> set = new HashSet<>(16);
+        // 拼接扫描 package class 文件路径
         String packageSearchPath =
                 ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + ClassUtils.convertClassNameToResourcePath(pkg) + '/'
                         + "**/*.class";
         try {
+            // 根据路径获取 相应的resource资源列表
             Resource[] resources = resourcePatternResolver.getResources(packageSearchPath);
             for (Resource resource : resources) {
+                // 加载 class
                 Class<?> scanClass = getClassByResource(resource);
+                // 判断当前 class 是否具有指定 annotation 注解
                 if (scanClass.isAnnotationPresent(annotation)) {
                     set.add((Class<T>) scanClass);
                 }

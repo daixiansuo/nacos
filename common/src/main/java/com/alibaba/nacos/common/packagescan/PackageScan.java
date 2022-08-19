@@ -29,6 +29,8 @@ public interface PackageScan {
     /**
      * Scan all appropriate Class object through the package name and Class object.
      *
+     * 扫描指定 pkg (包名路径) 下，所有 requestClass 的子类
+     *
      * @param pkg          package name,for example, com.alibaba.nacos.common
      * @param requestClass super class
      * @param <T>          Class type
@@ -38,6 +40,8 @@ public interface PackageScan {
     
     /**
      * Scan all appropriate Class object through the package name and annotation.
+     *
+     * 扫描指定 pkg (包名路径) 下，所有添加指定 annotation 注解的类
      *
      * @param pkg        package name,for example, com.alibaba.nacos.common
      * @param annotation annotation

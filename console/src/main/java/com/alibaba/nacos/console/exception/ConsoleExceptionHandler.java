@@ -31,25 +31,26 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * Exception handler for console module.
+ * 异常处理器，仅对于 console 模块
  *
  * @author nkorange
  * @since 1.2.0
  */
 @ControllerAdvice
 public class ConsoleExceptionHandler {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsoleExceptionHandler.class);
-    
+
     @ExceptionHandler(AccessException.class)
     private ResponseEntity<String> handleAccessException(AccessException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getErrMsg());
     }
-    
+
     @ExceptionHandler(IllegalArgumentException.class)
     private ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionUtil.getAllExceptionMsg(e));
     }
-    
+
     @ExceptionHandler(Exception.class)
     private ResponseEntity<Object> handleException(HttpServletRequest request, Exception e) {
         String uri = request.getRequestURI();

@@ -26,17 +26,29 @@ import java.util.Set;
 /**
  * request param info. {@link org.springframework.web.bind.annotation.RequestMapping#params()}
  *
+ * TODO：对应 @GetMapping.params 参数字段
+ *
+ * 关于 @GetMapping.params 使用，可以参考这个文章，<a href="https://blog.csdn.net/qq_36205206/article/details/119973306">...</a>
+ *
  * @author horizonzy
  * @since 1.3.2
  */
 public class ParamRequestCondition {
-    
+
     private final Set<ParamExpression> expressions;
-    
+
     public ParamRequestCondition(String... expressions) {
         this.expressions = parseExpressions(expressions);
     }
-    
+
+
+    /**
+     * eg: @GetMapping(params = "checkNamespaceIdExist=true")
+     * 用于解析 xxxMapping 注解上的 params 参数
+     *
+     * @param params 参数列表
+     * @return Set<ParamExpression>
+     */
     private Set<ParamExpression> parseExpressions(String... params) {
         if (ObjectUtils.isEmpty(params)) {
             return Collections.emptySet();
@@ -47,11 +59,11 @@ public class ParamRequestCondition {
         }
         return expressions;
     }
-    
+
     public Set<ParamExpression> getExpressions() {
         return expressions;
     }
-    
+
     public ParamRequestCondition getMatchingCondition(HttpServletRequest request) {
         for (ParamExpression expression : this.expressions) {
             if (!expression.match(request)) {
@@ -60,20 +72,20 @@ public class ParamRequestCondition {
         }
         return this;
     }
-    
+
     @Override
     public String toString() {
         return "ParamRequestCondition{" + "expressions=" + expressions + '}';
     }
-    
+
     static class ParamExpression {
-        
+
         private final String name;
-        
+
         private final String value;
-        
+
         private final boolean isNegated;
-        
+
         ParamExpression(String expression) {
             int separator = expression.indexOf('=');
             if (separator == -1) {
@@ -86,7 +98,7 @@ public class ParamRequestCondition {
                 this.value = expression.substring(separator + 1);
             }
         }
-        
+
         public final boolean match(HttpServletRequest request) {
             boolean isMatch;
             if (this.value != null) {
@@ -96,15 +108,15 @@ public class ParamRequestCondition {
             }
             return this.isNegated != isMatch;
         }
-        
+
         private boolean matchName(HttpServletRequest request) {
             return request.getParameterMap().containsKey(this.name);
         }
-        
+
         private boolean matchValue(HttpServletRequest request) {
             return ObjectUtils.nullSafeEquals(this.value, request.getParameter(this.name));
         }
-        
+
         @Override
         public String toString() {
             return "ParamExpression{" + "name='" + name + '\'' + ", value='" + value + '\'' + ", isNegated=" + isNegated

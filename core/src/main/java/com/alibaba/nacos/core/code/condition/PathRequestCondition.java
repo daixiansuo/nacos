@@ -46,9 +46,15 @@ public class PathRequestCondition {
     }
     
     static class PathExpression {
-        
+
+        /**
+         * HTTP 请求方法
+         */
         private final String method;
-        
+
+        /**
+         * 请求路径
+         */
         private final String path;
         
         PathExpression(String method, String path) {
